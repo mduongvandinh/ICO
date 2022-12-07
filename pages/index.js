@@ -223,7 +223,7 @@ export default function Home() {
   };
 
   /**
-   * withdrawCoins: withdraws ether and tokens by calling
+   * withdrawCoins: withdraws ether by calling
    * the withdraw function in the contract
    */
   const withdrawCoins = async () => {
@@ -242,6 +242,7 @@ export default function Home() {
       await getOwner();
     } catch (err) {
       console.error(err);
+      window.alert(err.reason);
     }
   };
 
@@ -308,7 +309,7 @@ export default function Home() {
       getTotalTokensMinted();
       getBalanceOfCryptoDevTokens();
       getTokensToBeClaimed();
-      withdrawCoins();
+      getOwner();
     }
   }, [walletConnected]);
 
@@ -321,16 +322,6 @@ export default function Home() {
       return (
         <div>
           <button className={styles.button}>Loading...</button>
-        </div>
-      );
-    }
-    // if owner is connected, withdrawCoins() is called
-    if (walletConnected && isOwner) {
-      return (
-        <div>
-          <button className={styles.button1} onClick={withdrawCoins}>
-            Withdraw Coins
-          </button>
         </div>
       );
     }
@@ -396,6 +387,17 @@ export default function Home() {
                 Overall {utils.formatEther(tokensMinted)}/10000 have been minted!!!
               </div>
               {renderButton()}
+              {/* Display additional withdraw button if connected wallet is owner */}
+                {isOwner ? (
+                  <div>
+                  {loading ? <button className={styles.button}>Loading...</button>
+                           : <button className={styles.button} onClick={withdrawCoins}>
+                               Withdraw Coins
+                             </button>
+                  }
+                  </div>
+                  ) : ("")
+                }
             </div>
           ) : (
             <button onClick={connectWallet} className={styles.button}>
